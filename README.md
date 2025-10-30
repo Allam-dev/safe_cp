@@ -7,16 +7,16 @@ It automatically resolves relative paths, asks before overwriting, and supports 
 
 ## 🚀 Features
 
-✅ Copy multiple files and directories in one command
-✅ Recursively copy directories
-✅ Handles relative paths (`.`, `..`, `./`, `../`)
-✅ Automatically creates missing directories
-✅ Interactive overwrite prompt
-✅ Inline renaming with `:` syntax
-✅ Prevents dangerous operations:
+✅&nbsp;Copy multiple files and directories in one command  
+✅&nbsp;Recursively copy directories  
+✅&nbsp;Handles relative paths (`.`, `..`, `./`, `../`)  
+✅&nbsp;Automatically creates missing directories  
+✅&nbsp;Interactive overwrite prompt  
+✅&nbsp;Inline renaming with `:` syntax  
+✅&nbsp;Prevents dangerous operations:  
+&nbsp;&nbsp;&nbsp;&nbsp;• Copying `/`  
+&nbsp;&nbsp;&nbsp;&nbsp;• Copying a directory into its child
 
-* Copying `/`
-* Copying a directory into its child
 
 ---
 
