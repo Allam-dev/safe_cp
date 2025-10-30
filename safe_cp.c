@@ -25,10 +25,18 @@ void read_string(char *buffer, size_t buffer_size);
 char read_char();
 bool make_dir(const char *path);
 void create_directories_recursively(const char *path);
+void show_help_msg();
 char *cwd = NULL;
 char *parent_dir = NULL;
 int main(int argc, char *argv[])
 {
+
+    if (argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")))
+    {
+        show_help_msg();
+        return 0;
+    }
+
     char **sources = NULL;
     char *destination = NULL;
     cwd = realpath(".", NULL);
@@ -61,7 +69,7 @@ int main(int argc, char *argv[])
 
     if (destination == NULL || sources == NULL || source_count == 0)
     {
-        perror("Usage: safe_cp -s <source1> <source2> ... -d <destination_directory>");
+        show_help_msg();
         exit(EXIT_FAILURE);
     }
 
@@ -451,4 +459,32 @@ bool make_dir(const char *path)
         return false;
     }
     return true;
+}
+
+void show_help_msg()
+{
+    printf(
+        "Usage: safe_cp -s <source1> <source2> ... -d <destination_directory>\n\n"
+        "Description:\n"
+        "  A safe, interactive alternative to the cp command.\n\n"
+        "Options:\n"
+        "  -s <sources>          Specify one or more source files or directories.\n"
+        "                        Each source can optionally include a rename using ':'\n"
+        "                        Example: ./old.txt:new.txt  (renames old.txt to new.txt)\n\n"
+        "  -d <destination>      Specify the destination directory.\n"
+        "                        If the destination (or any parent folder) doesn't exist,\n"
+        "                        it will be created automatically — like 'mkdir -p'.\n\n"
+        "  -h, --help            Display this help message.\n\n"
+        "Behavior:\n"
+        "  • Copies both files and directories recursively.\n"
+        "  • Converts relative paths (., .., ./, ../) to absolute.\n"
+        "  • Automatically creates missing destination directories.\n"
+        "  • Prompts before overwriting existing files or directories.\n"
+        "  • Skips copying root directory '/' or copying parent into its child.\n"
+        "  • Renamed new names must not contain ':'.\n\n"
+        "Examples:\n"
+        "  safe_cp -s ./a.txt ./b.txt -d ../backup\n"
+        "  safe_cp -s ./dir1 ./dir2 -d /home/user/data\n"
+        "  safe_cp -s ./photo.jpg:newname.jpg ./video.mp4 -d ./media\n"
+        "  safe_cp -s ../docs -d ./backup\n\n");
 }
