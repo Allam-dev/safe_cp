@@ -1,5 +1,5 @@
 - copy paretn into child ✅
 - copy existing file (ask for overwrite or rename) ✅
 - copy existing dir (ask for overwrite or rename)✅
-- create destination folder if it isn exist 
+- create destination folder if it isn exist ✅
 - enter source with new name like /home/allam/fileordir:newname ✅
