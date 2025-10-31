@@ -24,10 +24,11 @@ void decode_source_path(const char *path, char **name, char **true_path);
 void read_string(char *buffer, size_t buffer_size);
 char read_char();
 bool make_dir(const char *path);
-void create_directories_recursively(const char *path);
+bool create_directories_recursively(const char *path);
 void show_help_msg();
 char *cwd = NULL;
 char *parent_dir = NULL;
+
 int main(int argc, char *argv[])
 {
 
@@ -62,14 +63,36 @@ int main(int argc, char *argv[])
             {
                 destination = strdup(argv[i]);
                 format_path(&destination);
-                create_directories_recursively(destination);
+                if (!create_directories_recursively(destination))
+                {
+                    if (sources)
+                    {
+                        for (int j = 0; j < source_count; j++)
+                            free(sources[j]);
+                        free(sources);
+                    }
+                    free(destination);
+                    free(cwd);
+                    free(parent_dir);
+                    exit(EXIT_FAILURE);
+                }
             }
         }
     }
 
-    if (destination == NULL || sources == NULL || source_count == 0)
+    if (destination == NULL || sources == NULL)
     {
         show_help_msg();
+        if (sources)
+        {
+            for (int j = 0; j < source_count; j++)
+                free(sources[j]);
+            free(sources);
+        }
+        if (destination)
+            free(destination);
+        free(cwd);
+        free(parent_dir);
         exit(EXIT_FAILURE);
     }
 
@@ -117,7 +140,6 @@ enum source_type get_source_type(const char *path)
 
 void copy_file(const char *source_path, const char *destination_path, const char *file_name, bool enable_overwrite)
 {
-
     // full path = destination_path/file_name\0
     char *full_destination_path = malloc(strlen(destination_path) + strlen(file_name) + 2);
     sprintf(full_destination_path, "%s/%s", destination_path, file_name);
@@ -370,19 +392,27 @@ void decode_source_path(const char *path, char **name, char **true_path)
     }
 }
 
-void create_directories_recursively(const char *path)
+bool create_directories_recursively(const char *path)
 {
     enum source_type type = get_source_type(path);
 
     if (type == D)
-        return;
+        return true;
 
     if (type == F)
     {
         printf("Path %s is a file, choose a different path.\n\n", path);
-        exit(EXIT_FAILURE);
+        return false;
     }
 
+    printf("Destination directory %s does not exist.\nWant to create it (y/n)? : ", path);
+    char response = read_char();
+    NL;
+    if (response != 'y')
+    {
+        printf("Directory creation aborted. Exiting.\n\n");
+        return false;
+    }
     int len = strlen(path), i = 0;
     char *tmp_path = malloc(len + 1);
     tmp_path[len] = '\0';
@@ -407,7 +437,7 @@ void create_directories_recursively(const char *path)
             if (!make_dir(tmp_path))
             {
                 free(tmp_path);
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
         tmp_path[i] = path[i];
@@ -417,11 +447,12 @@ void create_directories_recursively(const char *path)
             if (!make_dir(tmp_path))
             {
                 free(tmp_path);
-                exit(EXIT_FAILURE);
+                return false;
             }
         }
     }
     free(tmp_path);
+    return true;
 }
 
 void read_string(char *buffer, size_t buffer_size)
