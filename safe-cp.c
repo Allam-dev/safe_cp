@@ -119,7 +119,6 @@ int main(int argc, char *argv[])
     free(destination);
     free(cwd);
     free(parent_dir);
-    printf("Done\n\n");
     return 0;
 }
 
