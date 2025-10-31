@@ -354,11 +354,13 @@ void format_path(char **path)
     }
     else if (!strcmp("..", (*path)))
     {
+        free(*path);
         *path = strdup(parent_dir);
         return;
     }
     else if (!strcmp(".", (*path)))
     {
+        free(*path);
         *path = strdup(cwd);
         return;
     }
