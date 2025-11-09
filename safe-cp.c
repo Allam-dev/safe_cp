@@ -28,7 +28,7 @@ bool create_directories_recursively(const char *path);
 void show_help_msg();
 char *cwd = NULL;
 char *parent_dir = NULL;
-
+char *home = NULL;
 int main(int argc, char *argv[])
 {
 
@@ -42,6 +42,7 @@ int main(int argc, char *argv[])
     char *destination = NULL;
     cwd = realpath(".", NULL);
     parent_dir = realpath("..", NULL);
+    home = getenv("HOME");
     int source_count = 0;
 
     for (int i = 1; i < argc; i++)
@@ -187,7 +188,7 @@ void copy_file(const char *source_path, const char *destination_path, const char
 
         dest_type = get_source_type(full_destination_path);
     }
-    int destination_file = open(full_destination_path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+    int destination_file = open(full_destination_path, O_WRONLY | O_CREAT | O_TRUNC, 0655);
     if (destination_file == -1)
     {
         perror("Failed to open/create destination file");
@@ -335,36 +336,43 @@ void format_path(char **path)
 
     if ((*path)[0] == '/')
         return;
-
-    else if (!strncmp("./", (*path), 2))
+    else if (!strncmp("~/", (*path), 2) && home)
+    {
+        char *tmp = malloc(len + strlen(home) + 2);
+        sprintf(tmp, "%s/%s", home, (*path) + 2);
+        free(*path);
+        *path = tmp;
+    }
+    else if (!strcmp("~", (*path)) && home)
+    {
+        free(*path);
+        *path = strdup(home);
+    }
+    else if (!strncmp("./", (*path), 2) && cwd)
     {
         char *tmp = malloc(len + strlen(cwd) + 2);
         sprintf(tmp, "%s/%s", cwd, (*path) + 2);
         free(*path);
         *path = tmp;
-        return;
     }
-    else if (!strncmp("../", (*path), 3))
+    else if (!strncmp("../", (*path), 3) && parent_dir)
     {
         char *tmp = malloc(len + strlen(parent_dir) + 2);
         sprintf(tmp, "%s/%s", parent_dir, (*path) + 3);
         free(*path);
         *path = tmp;
-        return;
     }
-    else if (!strcmp("..", (*path)))
+    else if (!strcmp("..", (*path)) && parent_dir)
     {
         free(*path);
         *path = strdup(parent_dir);
-        return;
     }
-    else if (!strcmp(".", (*path)))
+    else if (!strcmp(".", (*path)) && cwd)
     {
         free(*path);
         *path = strdup(cwd);
-        return;
     }
-    else
+    else if (cwd)
     {
         char *tmp = malloc(len + strlen(cwd) + 2);
         sprintf(tmp, "%s/%s", cwd, *path);

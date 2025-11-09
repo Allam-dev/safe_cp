@@ -15,5 +15,11 @@ int main()
   char *cwd = realpath(".", NULL);
   char *parent_dir = realpath("..", NULL);
   printf("cwd: %s\n parent_dir: %s\n", cwd, parent_dir);
+
+  char *home = getenv("HOME");
+  printf("home: %s\n", home);
+
+  char* home2 = realpath("~", NULL);
+  printf("home2: %s\n", home2);
   return 0;
 }
