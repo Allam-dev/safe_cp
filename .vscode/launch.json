@@ -11,9 +11,10 @@
             "request": "launch",
             "program": "${fileDirname}/${fileBasenameNoExtension}",
             "args": ["-s",
-                ".",
+
+                "~/Downloads",
                 "-d",
-                "xDesktop/abdo/mohameddd/"],
+                "~/Documents"],
             "stopAtEntry": false,
             "cwd": "${fileDirname}",
             "environment": [],

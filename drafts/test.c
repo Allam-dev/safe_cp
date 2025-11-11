@@ -12,8 +12,23 @@ int main()
 {
 
   struct stat source_state;
-  char *cwd = realpath(".", NULL);
-  char *parent_dir = realpath("..", NULL);
+  if (mkdir("bbbbbbbbbbb/x/e/gf/w/e", 0777) == -1)
+  {
+    perror("mkdir failed");
+  }
+  if (stat("..", &source_state) != 0)
+    printf("stat error: %s\n", strerror(errno));
+  // the prefix S_I stands for “Status – Indication (of) permission bits”,
+  // S_IRUSR; // I can use this as permission indicator for the owner but [perror] will clear that is permission denied
+  if (S_ISREG(source_state.st_mode))
+    printf("It's a file\n");
+  else if (S_ISDIR(source_state.st_mode))
+    printf("It's a directory\n");
+  else
+    printf("It's not a file or directory\n");
+
+  char *cwd = realpath("drafts", NULL);
+  char *parent_dir = realpath("/home/allam/", NULL);
   printf("cwd: %s\n parent_dir: %s\n", cwd, parent_dir);
 
   char *home = getenv("HOME");
