@@ -8,3 +8,6 @@
 
 safe_cp
 safe-cp
+
+copy*
+*.out

@@ -498,7 +498,7 @@ bool make_dir(const char *path)
 void show_help_msg()
 {
     printf(
-        "Usage: safe_cp -s <source1> <source2> ... -d <destination_directory>\n\n"
+        "Usage: copy -s <source1> <source2> ... -d <destination_directory>\n\n"
         "Description:\n"
         "  A safe, interactive alternative to the cp command.\n\n"
         "Options:\n"
@@ -517,8 +517,8 @@ void show_help_msg()
         "  • Skips copying root directory '/' or copying parent into its child.\n"
         "  • Renamed new names must not contain ':'.\n\n"
         "Examples:\n"
-        "  safe_cp -s ./a.txt ./b.txt -d ../backup\n"
-        "  safe_cp -s ./dir1 ./dir2 -d /home/user/data\n"
-        "  safe_cp -s ./photo.jpg:newname.jpg ./video.mp4 -d ./media\n"
-        "  safe_cp -s ../docs -d ./backup\n\n");
+        "  copy -s ./a.txt ./b.txt -d ../backup\n"
+        "  copy -s ./dir1 ./dir2 -d /home/user/data\n"
+        "  copy -s ./photo.jpg:newname.jpg ./video.mp4 -d ./media\n"
+        "  copy -s ../docs -d ./backup\n\n");
 }
